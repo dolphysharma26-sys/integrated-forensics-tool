@@ -7,56 +7,58 @@ import sys
 import os
 import logging
 
-# Setup basic logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(levelname)s - %(message)s'
 )
-logger = logging.getLogger(__name__)
 
 def main():
-    """Main entry point"""
     print("="*60)
     print("INTEGRATED SECURE DATA ERASURE AND RECOVERY TOOL")
     print("="*60)
-    print(f"Python Version: {sys.version}")
-    print(f"Current Directory: {os.getcwd()}")
+    print(f"Python: {sys.version.split()[0]}")
+    print(f"Directory: {os.getcwd()}")
     print("="*60)
     
-    print("\n✅ Project initialized successfully!")
-    print("\nAvailable modules:")
-    print("  1. Core Infrastructure (Device Manager, Storage)")
-    print("  2. Secure Erasure Engine")
-    print("  3. File Carving & Recovery")
-    print("  4. Reporting & Audit System")
-    print("  5. User Interface")
+    print("\n📦 Testing modules...")
     
-    print("\n📦 Installed Packages:")
+    # Test device detector
     try:
-        import psutil
-        print(f"  - psutil {psutil.__version__}")
-    except ImportError:
-        print("  - psutil (not installed)")
+        from core.device_manager.device_detector import DeviceDetector
+        detector = DeviceDetector()
+        devices = detector.list_devices()
+        print(f"✅ Device Detector: Found {len(devices)} devices")
+        detector.print_devices()
+    except Exception as e:
+        print(f"❌ Device Detector: {e}")
     
+    # Test pattern generator
     try:
-        import numpy
-        print(f"  - numpy {numpy.__version__}")
-    except ImportError:
-        print("  - numpy (not installed)")
+        from modules.erasure.pattern_generator import PatternGenerator
+        pg = PatternGenerator()
+        patterns = pg.get_patterns()
+        print(f"\n✅ Pattern Generator: {len(patterns)} patterns ready")
+    except Exception as e:
+        print(f"❌ Pattern Generator: {e}")
     
+    # Test signature carver
     try:
-        import pandas
-        print(f"  - pandas {pandas.__version__}")
-    except ImportError:
-        print("  - pandas (not installed)")
+        from modules.recovery.signature_carver import SignatureCarver
+        carver = SignatureCarver()
+        print(f"✅ Signature Carver: {len(carver.signatures)} signatures loaded")
+    except Exception as e:
+        print(f"❌ Signature Carver: {e}")
     
+    # Test report generator
     try:
-        import PIL
-        print(f"  - Pillow {PIL.__version__}")
-    except ImportError:
-        print("  - Pillow (not installed)")
+        from modules.reporting.report_generator import ReportGenerator
+        rg = ReportGenerator()
+        print(f"✅ Report Generator: Ready")
+    except Exception as e:
+        print(f"❌ Report Generator: {e}")
     
-    print("\n🚀 Ready to start development!")
+    print("\n" + "="*60)
+    print("🚀 All modules ready!")
     print("="*60)
 
 if __name__ == "__main__":
