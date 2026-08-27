@@ -1,65 +1,61 @@
 """
 Integrated Secure Data Erasure and Advanced File Recovery Tool
-Main Entry Point
+Main Entry Point - Member 1: Core Infrastructure
 """
 
 import sys
 import os
-import logging
+from core.common.logger import setup_logger
+from core.common.database import Database
+from core.storage.storage_interface import StorageInterface
+from integration.workflow.task_queue import TaskQueue
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+logger = setup_logger('main')
 
 def main():
     print("="*60)
     print("INTEGRATED SECURE DATA ERASURE AND RECOVERY TOOL")
-    print("="*60)
-    print(f"Python: {sys.version.split()[0]}")
-    print(f"Directory: {os.getcwd()}")
+    print("Core Infrastructure by Member 1")
     print("="*60)
     
-    print("\n📦 Testing modules...")
+    # Initialize database
+    logger.info("Initializing database...")
+    db = Database()
+    db.connect()
+    db.create_tables()
+    print("✅ Database initialized")
     
-    # Test device detector
-    try:
-        from core.device_manager.device_detector import DeviceDetector
-        detector = DeviceDetector()
-        devices = detector.list_devices()
-        print(f"✅ Device Detector: Found {len(devices)} devices")
-        detector.print_devices()
-    except Exception as e:
-        print(f"❌ Device Detector: {e}")
+    # Initialize storage interface
+    logger.info("Initializing storage interface...")
+    storage = StorageInterface()
+    print("✅ Storage interface ready")
     
-    # Test pattern generator
-    try:
-        from modules.erasure.pattern_generator import PatternGenerator
-        pg = PatternGenerator()
-        patterns = pg.get_patterns()
-        print(f"\n✅ Pattern Generator: {len(patterns)} patterns ready")
-    except Exception as e:
-        print(f"❌ Pattern Generator: {e}")
+    # Initialize task queue
+    logger.info("Initializing task queue...")
+    tq = TaskQueue(max_workers=2)
+    print("✅ Task queue ready")
     
-    # Test signature carver
-    try:
-        from modules.recovery.signature_carver import SignatureCarver
-        carver = SignatureCarver()
-        print(f"✅ Signature Carver: {len(carver.signatures)} signatures loaded")
-    except Exception as e:
-        print(f"❌ Signature Carver: {e}")
+    # List devices
+    print("\n📀 Detecting devices...")
+    devices = storage.list_devices()
     
-    # Test report generator
-    try:
-        from modules.reporting.report_generator import ReportGenerator
-        rg = ReportGenerator()
-        print(f"✅ Report Generator: Ready")
-    except Exception as e:
-        print(f"❌ Report Generator: {e}")
+    if devices:
+        print(f"Found {len(devices)} devices:\n")
+        for i, device in enumerate(devices, 1):
+            print(f"{i}. {device.name}")
+            print(f"   Size: {device.size_gb} GB")
+            print(f"   Type: {device.device_type}")
+            print(f"   Filesystem: {device.filesystem}")
+            print()
+    else:
+        print("No devices detected")
     
-    print("\n" + "="*60)
-    print("🚀 All modules ready!")
     print("="*60)
+    print("✅ Core Infrastructure ready for module integration")
+    print("="*60)
+    
+    # Close database
+    db.close()
 
 if __name__ == "__main__":
     main()
