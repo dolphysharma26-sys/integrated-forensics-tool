@@ -3,8 +3,13 @@ Device Detection Module
 Detects connected storage devices on the system
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import psutil
 import logging
+import platform
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -62,26 +67,43 @@ class DeviceDetector:
         return self.devices
     
     def _detect_device_type(self, device_path: str) -> str:
-        """Detect if device is HDD, SSD, or removable"""
-        if "nvme" in device_path.lower():
-            return "SSD (NVMe)"
-        elif "ssd" in device_path.lower():
-            return "SSD"
-        elif "usb" in device_path.lower() or "removable" in device_path.lower():
-            return "USB Drive"
-        elif "sd" in device_path.lower():
-            return "HDD"
+        """Detect device type"""
+        system = platform.system()
+        
+        if system == "Windows":
+            # Windows: C:\ is system drive
+            if device_path == "C:\\":
+                return "System Drive (SSD)"
+            else:
+                return "Local Disk"
         else:
-            return "Unknown"
+            # Linux/macOS
+            device_lower = device_path.lower()
+            
+            if "nvme" in device_lower:
+                return "SSD (NVMe)"
+            elif "usb" in device_lower:
+                return "USB Drive"
+            elif "sd" in device_lower:
+                return "HDD"
+            else:
+                return "Unknown"
+    
+    def get_device_by_name(self, name: str) -> Optional[Device]:
+        """Get device by its name/path"""
+        for device in self.devices:
+            if device.name == name:
+                return device
+        return None
     
     def print_devices(self):
         """Display all detected devices"""
         if not self.devices:
-            print("\n⚠️ No devices detected!")
+            print("\nNo devices detected!")
             return
         
         print("\n" + "="*60)
-        print("📀 DETECTED STORAGE DEVICES")
+        print("DETECTED STORAGE DEVICES")
         print("="*60)
         
         for i, device in enumerate(self.devices, 1):

@@ -1,10 +1,14 @@
 """
 Erasure Module Interface
-Defines how erasure module communicates with other modules
+Defines how erasure module communicates with core
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 class IErasureModule(ABC):
     """Interface for erasure module"""
@@ -20,16 +24,8 @@ class IErasureModule(ABC):
         pass
     
     @abstractmethod
-    def erase_folder(self, folder_path: str) -> Dict:
-        """Securely erase folder"""
-        pass
-    
-    @abstractmethod
     def verify_erasure(self, device_path: str) -> Dict:
         """Verify erasure was successful"""
         pass
-    
-    @abstractmethod
-    def get_erasure_status(self, operation_id: str) -> Dict:
-        """Get erasure operation status"""
-        pass
+
+print("Erasure Interface defined")

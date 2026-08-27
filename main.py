@@ -1,10 +1,12 @@
 """
 Integrated Secure Data Erasure and Advanced File Recovery Tool
-Main Entry Point - Member 1: Core Infrastructure
+Main Entry Point
 """
 
 import sys
 import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from core.common.logger import setup_logger
 from core.common.database import Database
 from core.storage.storage_interface import StorageInterface
@@ -15,46 +17,61 @@ logger = setup_logger('main')
 def main():
     print("="*60)
     print("INTEGRATED SECURE DATA ERASURE AND RECOVERY TOOL")
-    print("Core Infrastructure by Member 1")
+    print("Core Infrastructure - Member 1")
     print("="*60)
     
-    # Initialize database
-    logger.info("Initializing database...")
+    # Step 1: Database
+    print("\n[1/5] Initializing database...")
     db = Database()
     db.connect()
     db.create_tables()
-    print("✅ Database initialized")
+    print("✅ Database ready")
     
-    # Initialize storage interface
-    logger.info("Initializing storage interface...")
+    # Step 2: Storage
+    print("\n[2/5] Initializing storage interface...")
     storage = StorageInterface()
     print("✅ Storage interface ready")
     
-    # Initialize task queue
-    logger.info("Initializing task queue...")
+    # Step 3: Task Queue
+    print("\n[3/5] Initializing task queue...")
     tq = TaskQueue(max_workers=2)
     print("✅ Task queue ready")
     
-    # List devices
-    print("\n📀 Detecting devices...")
+    # Step 4: TSK
+    print("\n[4/5] Checking TSK availability...")
+    try:
+        from integration.tsk_wrapper.tsk_loader import TSKLoader
+        tsk_loader = TSKLoader()
+        status = tsk_loader.get_status()
+        
+        if status['tsk']:
+            print("✅ Sleuth Kit available for forensic analysis")
+        else:
+            print("⚠️ TSK not available")
+        
+        if status['ewf']:
+            print("✅ EWF (E01) image support ready")
+    except Exception as e:
+        print(f"⚠️ TSK check failed: {e}")
+    
+    # Step 5: Devices
+    print("\n[5/5] Detecting devices...")
     devices = storage.list_devices()
     
     if devices:
-        print(f"Found {len(devices)} devices:\n")
+        print(f"\n📀 Found {len(devices)} device(s):")
         for i, device in enumerate(devices, 1):
-            print(f"{i}. {device.name}")
-            print(f"   Size: {device.size_gb} GB")
-            print(f"   Type: {device.device_type}")
-            print(f"   Filesystem: {device.filesystem}")
-            print()
+            print(f"\n  {i}. {device.name}")
+            print(f"     Size: {device.size_gb} GB")
+            print(f"     Type: {device.device_type}")
+            print(f"     Filesystem: {device.filesystem}")
     else:
-        print("No devices detected")
+        print("\n⚠️ No devices detected")
     
-    print("="*60)
-    print("✅ Core Infrastructure ready for module integration")
+    print("\n" + "="*60)
+    print("✅ Core Infrastructure + TSK Integration Ready")
     print("="*60)
     
-    # Close database
     db.close()
 
 if __name__ == "__main__":
