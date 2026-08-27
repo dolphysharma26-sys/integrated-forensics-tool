@@ -3,6 +3,12 @@ Task Queue Module
 Manages operation queue for the forensics tool
 """
 
+import sys
+import os
+
+# Add project root to Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import queue
 import threading
 from dataclasses import dataclass
