@@ -52,12 +52,6 @@ pip install -r requirements.txt
 ### Running the Application
 python main.py
 
-## Team Members
-- Member 1: Project Lead & Integration
-- Member 2: Secure Erasure Module
-- Member 3: File Recovery Module
-- Member 4: Reporting & Audit Module
-- Member 5: UI/UX Module
 
 ## License
 This project is for NTRO internal use.
